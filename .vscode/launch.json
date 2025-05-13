@@ -52,8 +52,8 @@
       "url": "http://localhost:3001",
       "webRoot": "${workspaceFolder}/th-frontend",
       "cwd": "${workspaceFolder}/th-frontend",
-      "sourceMaps": true,
-      "trace": true
+      "sourceMaps": false,
+      "trace": false
     },
       {
         "name": "Launch Server",

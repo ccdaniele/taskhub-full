@@ -4,19 +4,18 @@ class ProjectsController < ApplicationController
   # GET /projects
   def index
     @projects = Project.all
-
     render json: @projects
   end
 
   # GET /projects/1
   def show
-    render json: @project
+    # Eager-load tasks and include them in the JSON response
+    render json: @project.as_json(include: :tasks)
   end
 
   # POST /projects
   def create
     @project = Project.new(project_params)
-  
 
     if @project.save
       render json: @project, status: :created, location: @project
@@ -40,13 +39,15 @@ class ProjectsController < ApplicationController
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.find(params[:id])
+      # Include associated tasks for performance and correctness
+      @project = Project.includes(:tasks).find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def project_params
-      params.require(:project).permit(:name, :time, :budget, :starting_at)
+      params.require(:project).permit(:name, :time, :budget, :starting_at, :finish, :public)
     end
 end

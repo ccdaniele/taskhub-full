@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import SideBar from 'app/components/templates/SideBar';
 
-const initialTasks = [
-  { id: 1, name: 'Task One', description: 'Design homepage', budget: 1000, spent: 300, finish: '2024-06-01', status: 'pending' },
-  { id: 2, name: 'Task Two', description: 'Setup database', budget: 1500, spent: 900, finish: '2024-06-10', status: 'in_progress' },
-  { id: 3, name: 'Task Three', description: 'Deploy to staging', budget: 500, spent: 100, finish: '2024-06-15', status: 'completed' }
-];
+// const initialTasks = [
+//   { id: 1, name: 'Task One', description: 'Design homepage', budget: 1000, spent: 300, finish: '2024-06-01', status: 'pending' },
+//   { id: 2, name: 'Task Two', description: 'Setup database', budget: 1500, spent: 900, finish: '2024-06-10', status: 'in_progress' },
+//   { id: 3, name: 'Task Three', description: 'Deploy to staging', budget: 500, spent: 100, finish: '2024-06-15', status: 'completed' }
+// ];
 
 const tags = ['Urgent', 'Internal', 'Design'];
 const resources = [
@@ -17,9 +17,10 @@ const resources = [
 ];
 
 export default function Project({ project }) {
+
+  const initialTasks = project.tasks;
   project.spent = 2300;
   project.deadline = '2025-06-30';
-
   const [tasks, setTasks] = useState(initialTasks);
   const [draggedTask, setDraggedTask] = useState(null);
 

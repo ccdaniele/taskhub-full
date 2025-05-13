@@ -13,7 +13,7 @@ async function getProject(id) {
 }
 
 export default async function ProjectPage({ params }) {
-    const { id } = params; // Directly access params.id
+    const { id } = await params; // Directly access params.id
     const project = await getProject(id); // Pass the id to your fetch function
 
     

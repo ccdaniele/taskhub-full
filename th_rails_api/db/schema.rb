@@ -10,16 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_14_211136) do
+ActiveRecord::Schema[7.0].define(version: 2025_05_13_151203) do
   create_table "projects", force: :cascade do |t|
     t.string "name"
     t.integer "time"
     t.integer "budget"
     t.date "starting_at"
-    t.date "finish"
+    t.date "ending_at"
     t.boolean "public"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
+    t.string "deadline"
+    t.integer "spent"
   end
 
   create_table "projects_resources", force: :cascade do |t|
@@ -74,9 +77,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_14_211136) do
     t.integer "cost"
     t.boolean "public"
     t.date "starting_at"
-    t.date "finish"
+    t.date "ending_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "spent"
+    t.string "status"
   end
 
   create_table "tasks_resources", force: :cascade do |t|

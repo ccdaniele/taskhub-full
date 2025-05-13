@@ -22,11 +22,11 @@ require 'faker'
 end
 
 10.times do 
-    Project.create(name:Faker::Hobby.activity, time: 67, budget:Faker::Number.within(range: 10..1000),  starting_at:Faker::Time.between(from: DateTime.now - 1, to: DateTime.now, format: :default), finish:Faker::Time.between(from: DateTime.now - 1, to: DateTime.now, format: :default), public:Faker::Boolean.boolean)
+    Project.create(name:Faker::Hobby.activity, time: 67, budget:Faker::Number.within(range: 10..1000),  starting_at:Faker::Time.between(from: DateTime.now - 1, to: DateTime.now, format: :default), ending_at:Faker::Time.between(from: DateTime.now - 1, to: DateTime.now, format: :default), public:Faker::Boolean.boolean, spent:Faker::Number.within(range: 10..1000), status:"pending", deadline:Faker::Time.between(from: DateTime.now - 1, to: DateTime.now, format: :default))
 end
 
 20.times do 
-    Task.create(name:Faker::ElectricalComponents.electromechanical, time:Faker::Time.between(from: DateTime.now - 1, to: DateTime.now, format: :default), cost:Faker::Number.within(range: 1..500))
+    Task.create(name:Faker::ElectricalComponents.electromechanical, time:Faker::Time.between(from: DateTime.now - 1, to: DateTime.now, format: :default), cost:Faker::Number.within(range: 1..500), ending_at:Faker::Time.between(from: DateTime.now - 1, to: DateTime.now, format: :default), public:Faker::Boolean.boolean, spent:Faker::Number.within(range: 10..1000), status:"pending")
 end
 
 30.times do 
@@ -51,7 +51,7 @@ end
 end
 
 10.times do 
-    ProjectsTasks.create(project_id:Faker::Number.within(range: 1..10), task_id:Faker::Number.within(range: 1..10))
+    ProjectsTask.create(project_id:Faker::Number.within(range: 1..10), task_id:Faker::Number.within(range: 1..10))
 end
 
 10.times do 
