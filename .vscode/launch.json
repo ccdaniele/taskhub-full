@@ -1,0 +1,73 @@
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//     // 🚀 Launch Chrome pointed at the frontend
+//     {
+//       "type": "chrome",
+//       "request": "launch",
+//       "name": "Launch Chrome",
+//       "url": "http://localhost:3001",
+//       "webRoot": "${workspaceFolder}/th-frontend",
+//       "cwd": "${workspaceFolder}/th-frontend",
+//       "sourceMaps": true,
+//       "trace": true
+//     },
+
+//     // 💻 Launch Next.js dev server in a terminal (no debugger attached)
+//     {
+//       "name": "Launch Server",
+//       "type": "node-terminal",
+//       "request": "launch",
+//       "command": "npm run dev",
+//       "cwd": "${workspaceFolder}/th-frontend",
+//       "sourceMaps": false
+//     },
+
+//     // 🐞 Attach to Node.js process (only if started with --inspect)
+//     {
+//       "name": "Attach to Next.js Backend",
+//       "type": "node",
+//       "request": "attach",
+//       "port": 9229,
+//       "restart": true,
+//     }
+//   ],
+//   "compounds": [
+//     // 🔗 Runs both Chrome and the server at the same time
+//     {
+//       "name": "Debug Next.js / Chrome",
+//       "configurations": ["Launch Server", "Launch Chrome"]
+//     }
+//   ]
+// }
+
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome",
+      "url": "http://localhost:3001",
+      "webRoot": "${workspaceFolder}/th-frontend",
+      "cwd": "${workspaceFolder}/th-frontend",
+      "sourceMaps": true,
+      "trace": true
+    },
+      {
+        "name": "Launch Server",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "npm run dev",
+        "cwd": "${workspaceFolder}/th-frontend",
+        "sourceMaps": false
+      },
+  ],
+  "compounds": [
+    {
+      "name": "Debug Next.js / Chrome",
+      "configurations": ["Launch Server", "Launch Chrome"]
+    }
+  ]
+}
