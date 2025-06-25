@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  time: 1
+  budget: 1
+  starting_at: 2025-05-14
+  ending_at: 2025-05-14
+  status: MyString
+  deadline: MyString
+  spent: 1
+  public: false
+
+two:
+  name: MyString
+  time: 1
+  budget: 1
+  starting_at: 2025-05-14
+  ending_at: 2025-05-14
+  status: MyString
+  deadline: MyString
+  spent: 1
+  public: false

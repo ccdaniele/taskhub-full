@@ -21,7 +21,7 @@ export default function UserHomePage() {
                         <p> Some extra content </p>
                         <div className="mt-4 flex gap-4">
                             <button key="projects" className="btn btn-primary" onClick={() => router.push('/projects')} >Go to Projects</button>
-                            <button key="tasks" className="btn btn-outline">View Tasks</button>
+                            <button key="tasks" className="btn btn-outline" onClick={() => router.push('/tasks')}>View Tasks</button>
                         </div>
                     </CardContent>
                 </Card>
