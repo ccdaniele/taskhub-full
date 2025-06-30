@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  title: MyString
+  content: MyText
+  post_type: MyString
+  project: one
+  task: one
+  resource: one
+  public: false
+
+two:
+  user: two
+  title: MyString
+  content: MyText
+  post_type: MyString
+  project: two
+  task: two
+  resource: two
+  public: false

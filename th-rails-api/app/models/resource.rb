@@ -1,6 +1,13 @@
 class Resource < ApplicationRecord
-    has_and_belongs_to_many :users
-    has_and_belongs_to_many :projects
-    has_and_belongs_to_many :tasks
-    has_and_belongs_to_many :tags
+    has_many :user_resources
+    has_many :users, through: :user_resources
+
+    has_many :project_resources
+    has_many :projects, through: :project_resources
+
+    has_many :task_resources
+    has_many :tasks, through: :task_resources
+
+    has_many :resource_tags
+    has_many :tags, through: :resource_tags
 end

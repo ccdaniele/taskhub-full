@@ -246,3 +246,143 @@ puts "Statistics:"
 puts "  Tasks with projects: #{Task.joins(:projects).distinct.count}/#{Task.count}"
 puts "  Projects with tasks: #{Project.joins(:tasks).distinct.count}/#{Project.count}"
 puts "  Average tasks per project: #{(Task.joins(:projects).count.to_f / Project.count).round(1)}"
+
+# Create community posts
+puts "Creating community posts..."
+
+post_types = %w[update showcase question tip general]
+post_content = {
+  "update" => [
+    "Just finished the framing for my deck! The weather held up perfectly and everything is level. Next step is laying the decking boards.",
+    "Made great progress on the kitchen cabinet refinishing today. The sanding took forever but the primer went on smoothly.",
+    "Hit a snag with the electrical work - turns out I need a permit for this. Taking a break to get the paperwork sorted.",
+    "Bathroom tile installation is complete! It took way longer than expected but I'm really happy with how it turned out.",
+    "Garden shed is finally weatherproofed. The roof was the trickiest part but YouTube tutorials saved the day!"
+  ],
+  "showcase" => [
+    "Finally completed my home office makeover! Built custom shelving and a standing desk. So much more productive now.",
+    "Check out my DIY fire pit! Used reclaimed bricks and it came out better than I hoped. Perfect for summer evenings.",
+    "Finished the treehouse for my kids! It's got a rope ladder, slide, and even a small deck. They absolutely love it.",
+    "My first attempt at solar panel installation was a success! Already seeing a reduction in the electric bill.",
+    "Transformed our boring fence into a living wall with built-in planters. The neighbors are already asking for tips!"
+  ],
+  "question" => [
+    "What's the best way to remove old paint from wooden furniture? I've tried sanding but it's taking forever.",
+    "Has anyone installed a smart home system themselves? I'm looking at options but not sure about the complexity.",
+    "Need advice on concrete mixing ratios for a small patio project. First time working with concrete!",
+    "What tools are absolutely essential for basic electrical work? Building a workshop and want to be prepared.",
+    "Any tips for keeping a project on budget? I always seem to go over my initial estimates."
+  ],
+  "tip" => [
+    "Pro tip: Always buy 10% more materials than you calculate. You'll thank me later when you don't have to make another trip to the store.",
+    "When painting, use a high-quality brush for cutting in. It makes all the difference in getting clean lines.",
+    "Measure twice, cut once - but also take photos of your measurements. Saved me so many times!",
+    "Keep a project journal with photos. It's amazing how much you forget between sessions, and it helps with future projects.",
+    "Invest in good safety equipment first. A project isn't worth an injury, and quality gear lasts for years."
+  ],
+  "general" => [
+    "Anyone else find DIY projects therapeutic? There's something satisfying about building something with your own hands.",
+    "What's everyone working on this weekend? I'm debating between starting the bathroom renovation or finishing the deck.",
+    "Shoutout to this community for all the help and inspiration! Started as a complete beginner and now I'm tackling major projects.",
+    "Weather's perfect for outdoor projects. Time to finally tackle that fence repair I've been putting off.",
+    "Found an amazing deal on tools at the local hardware store. Sometimes it pays to shop around!"
+  ]
+}
+
+posts = []
+50.times do
+  post_type = post_types.sample
+  content_options = post_content[post_type]
+  
+  # For update and showcase posts, link to a project/task/resource
+  project_id = nil
+  task_id = nil
+  resource_id = nil
+  
+  if %w[update showcase].include?(post_type)
+    case rand(3)
+    when 0
+      project_id = projects.sample.id
+    when 1
+      task_id = tasks.sample.id
+    when 2
+      resource_id = resources.sample.id
+    end
+  end
+  
+  posts << Post.create!(
+    user: users.sample,
+    title: case post_type
+           when 'update'
+             ["Project Update", "Progress Report", "Quick Update", "Latest Progress"].sample
+           when 'showcase'
+             ["Project Complete!", "Check This Out!", "Finished Project", "DIY Success!"].sample
+           when 'question'
+             ["Need Help", "Quick Question", "Advice Needed", "Anyone Know?"].sample
+           when 'tip'
+             ["Pro Tip", "Learned This Today", "Helpful Hint", "DIY Tip"].sample
+           when 'general'
+             ["Weekend Plans", "DIY Life", "Community Chat", "Random Thoughts"].sample
+           end,
+    content: content_options.sample,
+    post_type: post_type,
+    public: Faker::Boolean.boolean(true_ratio: 0.9),
+    project_id: project_id,
+    task_id: task_id,
+    resource_id: resource_id,
+    created_at: Faker::Time.backward(days: 30)
+  )
+end
+
+# Create comments on posts
+puts "Creating comments..."
+comments = []
+posts.each do |post|
+  # Each post gets 0-5 comments
+  comment_count = Faker::Number.between(from: 0, to: 5)
+  comment_count.times do
+    comments << Comment.create!(
+      user: users.sample,
+      post: post,
+      content: [
+        "Great work! This looks amazing.",
+        "Thanks for sharing! Very helpful.",
+        "I'm working on something similar. Mind if I ask where you got your materials?",
+        "Nice job! How long did this take you?",
+        "This is exactly what I needed to see. Thanks!",
+        "Looks professional! You should be proud.",
+        "Any tips for a beginner trying this?",
+        "Love the creativity! Never would have thought of that approach.",
+        "This is inspiring me to start my own project.",
+        "Great documentation! Very helpful for others."
+      ].sample,
+      created_at: Faker::Time.between(from: post.created_at, to: Time.current)
+    )
+  end
+end
+
+# Create likes on posts
+puts "Creating likes..."
+posts.each do |post|
+  # Each post gets 0-8 likes from different users
+  liking_users = users.sample(Faker::Number.between(from: 0, to: 8))
+  liking_users.each do |user|
+    Like.create!(
+      user: user,
+      post: post,
+      created_at: Faker::Time.between(from: post.created_at, to: Time.current)
+    )
+  end
+end
+
+puts ""
+puts "Community data created successfully!"
+puts "Created:"
+puts "  #{Post.count} posts"
+puts "  #{Comment.count} comments"
+puts "  #{Like.count} likes"
+puts ""
+puts "Post types:"
+Post.group(:post_type).count.each do |type, count|
+  puts "  #{type.capitalize}: #{count}"
+end

@@ -10,7 +10,65 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_14_222250) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_30_175932) do
+  create_table "comments", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "post_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_comments_on_post_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "follows", force: :cascade do |t|
+    t.integer "follower_id", null: false
+    t.integer "followed_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["followed_id"], name: "index_follows_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
+  end
+
+  create_table "friendships", force: :cascade do |t|
+    t.integer "requester_id", null: false
+    t.integer "requestee_id", null: false
+    t.string "status", default: "pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["requestee_id"], name: "index_friendships_on_requestee_id"
+    t.index ["requester_id", "requestee_id"], name: "index_friendships_on_requester_id_and_requestee_id", unique: true
+    t.index ["requester_id"], name: "index_friendships_on_requester_id"
+    t.index ["status"], name: "index_friendships_on_status"
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "post_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_likes_on_post_id"
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "title"
+    t.text "content"
+    t.string "post_type"
+    t.integer "project_id"
+    t.integer "task_id"
+    t.integer "resource_id"
+    t.boolean "public"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_posts_on_project_id"
+    t.index ["resource_id"], name: "index_posts_on_resource_id"
+    t.index ["task_id"], name: "index_posts_on_task_id"
+    t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
   create_table "project_resources", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "resource_id", null: false
@@ -144,8 +202,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_222250) do
     t.boolean "public"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email_verification_token"
+    t.datetime "email_verification_sent_at"
+    t.datetime "email_verified_at"
+    t.string "password_reset_token"
+    t.datetime "password_reset_sent_at"
   end
 
+  add_foreign_key "comments", "posts"
+  add_foreign_key "comments", "users"
+  add_foreign_key "follows", "users", column: "followed_id"
+  add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "friendships", "users", column: "requestee_id"
+  add_foreign_key "friendships", "users", column: "requester_id"
+  add_foreign_key "likes", "posts"
+  add_foreign_key "likes", "users"
+  add_foreign_key "posts", "projects"
+  add_foreign_key "posts", "resources"
+  add_foreign_key "posts", "tasks"
+  add_foreign_key "posts", "users"
   add_foreign_key "project_resources", "projects"
   add_foreign_key "project_resources", "resources"
   add_foreign_key "project_tags", "projects"
