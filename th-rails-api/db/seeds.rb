@@ -33,11 +33,28 @@ puts "Creating seed data..."
 
 # Create users
 puts "Creating users..."
-users = 5.times.map do
-  User.create!(
+users = []
+
+# Create a test user with known credentials
+test_user = User.create!(
+  username: "testuser",
+  email: "test@example.com", 
+  password: "password123",
+  password_confirmation: "password123",
+  public: true,
+  email_verified_at: Time.current
+)
+users << test_user
+
+# Create additional random users
+4.times do
+  users << User.create!(
     username: Faker::Internet.username,
     email: Faker::Internet.email,
-    password_digest: "12345"
+    password: "password123",
+    password_confirmation: "password123",
+    public: true,
+    email_verified_at: Time.current
   )
 end
 

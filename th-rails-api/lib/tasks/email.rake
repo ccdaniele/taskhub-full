@@ -1,3 +1,5 @@
+require 'ostruct'
+
 namespace :email do
   desc "Test email configuration by sending a test email"
   task test: :environment do

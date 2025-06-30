@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { signIn, getSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, CheckCircle } from 'lucide-react'
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
@@ -13,8 +13,34 @@ export default function SignIn() {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    // Check if user was redirected after successful email verification
+    if (searchParams.get('verified') === 'true') {
+      setSuccessMessage('Email verified successfully! You can now sign in.')
+    }
+    
+    // Check for authentication errors
+    const authError = searchParams.get('error')
+    if (authError) {
+      switch (authError) {
+        case 'CredentialsSignin':
+          setError('Invalid username/email or password. Please try again.')
+          break
+        case 'OAuthSignin':
+        case 'OAuthCallback':
+        case 'OAuthCreateAccount':
+          setError('There was an error with OAuth sign-in. Please try again.')
+          break
+        default:
+          setError('An authentication error occurred. Please try again.')
+      }
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,28 +51,38 @@ export default function SignIn() {
       const result = await signIn('credentials', {
         username: formData.username,
         password: formData.password,
-        redirect: false,
+        redirect: false, // Don't redirect automatically
       })
 
       if (result?.error) {
-        setError('Invalid credentials')
-      } else {
+        if (result.error === 'CredentialsSignin') {
+          setError('Invalid username/email or password. Please check your credentials and try again.')
+        } else {
+          setError('An error occurred during sign-in. Please try again.')
+        }
+      } else if (result?.ok) {
+        // Sign-in successful, check session and redirect
         const session = await getSession()
         if (session?.user?.emailVerified) {
           router.push('/')
         } else {
-          router.push('/auth/verify-email')
+          setError('Please verify your email before signing in. Check your inbox for a verification link.')
         }
       }
     } catch (error) {
-      setError('An error occurred. Please try again.')
+      console.error('Sign-in error:', error)
+      setError('An unexpected error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/' })
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn('google', { callbackUrl: '/' })
+    } catch (error) {
+      setError('Failed to sign in with Google. Please try again.')
+    }
   }
 
   return (
@@ -69,6 +105,13 @@ export default function SignIn() {
 
         <div className="bg-white dark:bg-gray-800 py-8 px-6 shadow-xl rounded-lg">
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {successMessage && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm flex items-center">
+                <CheckCircle className="h-5 w-5 mr-2" />
+                {successMessage}
+              </div>
+            )}
+
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
                 {error}
